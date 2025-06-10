@@ -2320,7 +2320,7 @@ def export_clusters_RETs(c,fncontainer,dfrets,dicttext,dfrets3500):
 
 
 def generate_tmp_iom(cdfct,cname,fname):
-    indexgeneral = ((cdfct.loc[:,'OPERATOR NAME']== 'ORANGE')|(cdfct.loc[:,'OPERATOR NAME']== 'Orange'))&(cdfct.loc[:,'STATUS']== 1)
+    indexgeneral = ((cdfct.loc[:,'OPERATOR NAME']== 'ORANGE')|(cdfct.loc[:,'OPERATOR NAME']== 'Orange'))&(cdfct.loc[:,'STATUS']== 1)&(cdfct.loc[:,'VENDOR'] =='HUAWEI')
     cdfct2g = cdfct.loc[indexgeneral&(cdfct.loc[:,'TECH']=='2G'),:].copy().reset_index()
     cdfct3g = cdfct.loc[indexgeneral&(cdfct.loc[:,'TECH']=='3G'),:].copy().reset_index()
     cdfct4g = cdfct.loc[indexgeneral&(cdfct.loc[:,'TECH']=='4G'),:].copy().reset_index()
@@ -2402,6 +2402,16 @@ def generate_tmp_iom(cdfct,cname,fname):
             for j,k in enumerate(keysfill):
                 sheet.cell(row=i+2, column=poskeysfill[j], value=cdfct5g.loc[i,k])
         doctofill.save(filename)
+
+        #==============Guardar sites ERICSSON==================
+        ericsson_sites = cdfct.loc[cdfct['VENDOR'] == 'ERICSSON', 'SITE'].dropna().unique()
+        ericsson_sites_str = ','.join(ericsson_sites)
+
+        # Guardar en archivo .txt dentro de TMP_IOM
+        ericsson_txt_path = os.path.join(fname, cname, tmpfoldername, 'ERICSSON_SITES.txt')
+        with open(ericsson_txt_path, 'w', encoding='utf-8') as f:
+            f.write(ericsson_sites_str)
+
 
 def nodezone(n):
     if n[2].isdigit():
